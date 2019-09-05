@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-mongoose.model("Book", {
+const Book = mongoose.model("Book", {
     // Title, author, numberPages, publisher
     title: {
         type: String,
@@ -19,3 +19,5 @@ mongoose.model("Book", {
         require: false
     }
 });
+
+module.exports = { Book };

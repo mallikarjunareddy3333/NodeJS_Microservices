@@ -1,27 +1,30 @@
-// Load express
+    // Load express
     const express = require("express");
     const app = express();
     const bodyParser = require('body-parser');
+    const db = require('./db')
 
     app.use(bodyParser.json());
 
-// Load mongoose
+    // Load mongoose
     const mongoose = require("mongoose");
 
     require("./Book");
     const Book = mongoose.model('Book');
 
-// connect
-    var url = 'mongodb://localhost:27017/booksservice'
-    mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
-        console.log('Database is connected!');
+    db.connect().then(() => {
+        app.listen(4545, () => {
+            console.log("Up and running! -- This is our Books service");
+        });
+    }).catch((err) => {
+        console.log('Error connecting to DB: '+err);
     });
 
-app.get("/", (req, res) => {
-    res.send("This is our main endpoint!");
-});
+    app.get("/", (req, res) => {
+        res.send("This is our main endpoint!");
+    });
 
-// Create func
+    // Create func
     app.post("/book", (req, res) => {
         var newBook = {
             title: req.body.title,
@@ -40,7 +43,7 @@ app.get("/", (req, res) => {
             }
         });
         
-        res.send("A new book created success!");
+        res.type('json').send({ message: "A new book created success!" });
 
     });
 
@@ -79,6 +82,4 @@ app.get("/", (req, res) => {
         });
     });
 
-app.listen(4545, () => {
-    console.log("Up and running! -- This is our Books service");
-})
+    module.exports = app;
